@@ -3,27 +3,6 @@ const Usuario = require('../models/usuarioModel')
 const bcrypt = require('bcryptjs')
 const { generarJwt } = require('../helpers/jwt')
 
-/* const getUser = async (req, res) => {
-    const userName = req.body.nombre
-
-    try {
-        const usuario = await Usuario.find({ nombre: userName })
-
-        return res.status(200).json({
-            ok: true,
-            msg: 'Obteniendo el usuario',
-            data: usuario
-        })
-    } catch (error) {
-        return res.status(404).json({
-            ok: false,
-            msg: 'El usuario no existe'
-        })
-    }
-
-} */
-
-
 
 
 const crearUsuario = async (req, res) => {
@@ -42,7 +21,7 @@ const crearUsuario = async (req, res) => {
             const token = await generarJwt(nuevoUsuarioData.id, nuevoUsuarioData.nombre)
             return res.status(201).json({
                 ok: true,
-                msg: 'Usuario creado',
+                msg: 'Usuario registrado',
                 token: token
             })
         } else {
@@ -69,23 +48,33 @@ const loginUser = async (req, res) => {
 
     try {
         const usuario = await Usuario.findOne({ email: req.body.email });
-
+        const passwordOk = bcrypt.compareSync(req.body.pass, usuario.pass);
+        console.log(passwordOk)
         if (usuario == null) {
             return res.status(404).json({
                 ok: false,
-                msg: 'El usuario no existe',
+                msg: 'El usuario con este email no existe',
             })
 
-        } else if (usuario.pass != req.body.pass) {
+        } else if (!passwordOk) {
             return res.status(400).json({
                 ok: false,
-                msg: 'Contraseña o usuario incorrectos',
+                msg: 'Contraseña no válida',
             })
         } else {
+
+            const token = await generarJwt(usuario._id, usuario.nombre)
+            const user = {
+                name: usuario.nombre,
+                email: usuario.email,
+                uid: usuario._id
+            }
+
             return res.status(200).json({
                 ok: true,
-                msg: 'Accediendo a la base  de datos',
-                data: usuario
+                msg: 'Login de usuario',
+                user: usuario,
+                token
             })
         }
 
@@ -97,7 +86,24 @@ const loginUser = async (req, res) => {
     }
 }
 
+const renew =async (req, res) => {
+
+const {uid, nombre} = req.body //req o req.body??
+const token = await generarJwt(uid, nombre)
+
+    res.status(200).json({
+        ok:true,
+        msg: 'renew token',
+        user: {
+            uid,
+            nombre
+        },
+        token
+    })
+}
+
 module.exports = {
     crearUsuario,
-    loginUser
+    loginUser,
+    renew
 }

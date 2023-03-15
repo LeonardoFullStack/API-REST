@@ -35,13 +35,3 @@ app.listen(port,()=>{
     console.log(`Servidor a la escucha del puerto ${port}`)
 })
 //ruta del api de usuarios
-
-
-/* const Servicio=require('./models/servicioModel');
-
-const newData = {
-    servicio: 'servicio randoman',
-    descripcion: 'servicio randomero desc'
-}
-
-Servicio.create(newData); */

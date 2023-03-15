@@ -51,7 +51,7 @@ const crearServicios = async (req, res) => {
 
         return res.status(201).json({
             ok: true,
-            msg: 'Creando un servicio nuevo',
+            msg: 'Servicio creado',
             servicio: nuevoServicioData
         })
 
