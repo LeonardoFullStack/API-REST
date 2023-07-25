@@ -3,6 +3,7 @@ const router=express.Router();
 const { getServicios,getServicio,crearServicios,actualizarServicio,eliminarServicio}=require('../controllers/apiControllers')
 const {check} =require('express-validator')
 const {validarInputs}=require('../middleware/validarInputs')
+const  {nodeMailerController} = require('../controllers/mailController')
 
 // recoger todos los servicios
 
@@ -30,6 +31,11 @@ router.put('/servicios/:id', [
 
 // eliminar un servicio
 router.delete('/servicios/:id',eliminarServicio)
+
+
+
+//enviar mail por la pagina de web personal
+router.post('/mail',  nodeMailerController)
 
 
 
